@@ -1,0 +1,655 @@
+---
+title: "Noel Caplice"
+author: "Darren L Dahly"
+date: "4 July 2016"
+output: html_document
+---
+
+```{r setup, echo = FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, 
+                      fig.align="center", width = 70)
+```
+
+
+```{r}
+ 
+# source("scripts/functions.R")
+  source("scripts/data.R")
+
+  
+```
+
+# GLVEF
+```{r}
+
+  glvef <- filter(data, time != "Difference") %>% 
+           select(id, arm, time, glvef, any.diabetes) %>%
+           spread(time, glvef) 
+           
+  names(glvef) <- c("id", "arm", "any.diabetes", "glvef.bl", "glvef.8") 
+  
+  glvef <- mutate(glvef, glvef.bl = glvef.bl - mean(glvef.bl, na.rm = TRUE)) %>%
+           mutate(any.diabetes = factor(any.diabetes))
+
+  lm.glvef.base  <- lm(glvef.8 ~ arm + glvef.bl + any.diabetes, data = glvef)
+  
+  summary(lm.glvef.base)
+  
+  plot(lm.glvef.base)
+  
+  glvef.result <- tidy(lm.glvef.base)
+  
+
+```
+
+# Stroke volume
+```{r}
+
+  sv.main <- filter(data, time != "Difference") %>% 
+             select(id, arm, time, sv.main, any.diabetes) %>%
+             spread(time, sv.main) 
+           
+  names(sv.main) <- c("id", "arm", "any.diabetes", "sv.main.bl", "sv.main.8") 
+  
+  sv.main <- mutate(sv.main, 
+                    sv.main.bl = sv.main.bl - 
+                                 mean(sv.main.bl, na.rm = TRUE)) %>%
+             mutate(any.diabetes = factor(any.diabetes))
+
+  lm.sv.main.base  <- lm(sv.main.8 ~ arm + sv.main.bl + any.diabetes, 
+                         data = sv.main) 
+  lm.sv.main.intr  <- lm(sv.main.8 ~ arm * sv.main.bl + any.diabetes, 
+                         data = sv.main) 
+
+  summary(lm.sv.main.base)
+# summary(lm.sv.main.intr)
+  
+  plot(lm.sv.main.base)
+  
+  sv.main.result <- tidy(lm.sv.main.base)
+  
+
+```
+
+# CE
+```{r}
+
+  latece <- filter(data, time != "Difference") %>% 
+            select(id, arm, time, latece, any.diabetes) %>%
+            spread(time, latece) 
+           
+  names(latece) <- c("id", "arm", "any.diabetes", "latece.bl", "latece.8") 
+  
+  latece <- mutate(latece, 
+                   latece.bl = latece.bl - mean(latece.bl, na.rm = TRUE)) %>%
+            mutate(any.diabetes = factor(any.diabetes))
+
+  lm.latece.base  <- lm(latece.8 ~ arm + latece.bl + any.diabetes, 
+                        data = latece) 
+  lm.latece.intr  <- lm(latece.8 ~ arm * latece.bl + any.diabetes, 
+                        data = latece) 
+
+  summary(lm.latece.base)
+  summary(lm.latece.intr)
+  
+  plot(lm.latece.base)
+  
+  latece.result <- tidy(lm.latece.base)
+  
+
+```
+
+# LV mass
+```{r}
+
+  lvmass.a <- filter(data, time != "Difference") %>% 
+              select(id, arm, time, lvmass.a, any.diabetes) %>%
+              spread(time, lvmass.a) 
+           
+  names(lvmass.a) <- c("id", "arm", "any.diabetes", "lvmass.a.bl", "lvmass.a.8") 
+  
+  lvmass.a <- mutate(lvmass.a, 
+                     lvmass.a.bl = lvmass.a.bl - 
+                                   mean(lvmass.a.bl, na.rm = TRUE)) %>%
+              mutate(any.diabetes = factor(any.diabetes))
+
+  lm.lvmass.a.base  <- lm(lvmass.a.8 ~ arm + lvmass.a.bl + any.diabetes, 
+                          data = lvmass.a) 
+  lm.lvmass.a.intr  <- lm(lvmass.a.8 ~ arm * lvmass.a.bl + any.diabetes, 
+                          data = lvmass.a) 
+
+  summary(lm.lvmass.a.base)
+  summary(lm.lvmass.a.intr)
+  
+  plot(lm.lvmass.a.base)
+  
+  lvmass.a.result <- tidy(lm.lvmass.a.base)
+  
+
+```
+
+# Infarct size
+```{r}
+
+  inf.size <- filter(data, time != "Difference") %>% 
+              select(id, arm, time, inf.size, any.diabetes) %>%
+              spread(time, inf.size) 
+           
+  names(inf.size) <- c("id", "arm", "any.diabetes", "inf.size.bl", "inf.size.8") 
+  
+  inf.size <- mutate(inf.size, 
+                     inf.size.bl = inf.size.bl - 
+                                   mean(inf.size.bl, na.rm = TRUE)) %>%
+              mutate(any.diabetes = factor(any.diabetes))
+
+  lm.inf.size.base  <- lm(inf.size.8 ~ arm + inf.size.bl + any.diabetes, 
+                          data = inf.size) 
+  lm.inf.size.intr  <- lm(inf.size.8 ~ arm * inf.size.bl + any.diabetes, 
+                          data = inf.size) 
+
+  summary(lm.inf.size.base)
+  summary(lm.inf.size.intr)
+  
+  plot(lm.inf.size.base)
+  
+  inf.size.result <- tidy(lm.inf.size.base)
+  
+
+```
+
+# LVEDV
+```{r}
+
+  lvedv <- filter(data, time != "Difference") %>% 
+           select(id, arm, time, lvedv, any.diabetes, bsa.m2) %>%
+           spread(time, lvedv) 
+           
+  names(lvedv) <- c("id", "arm", "any.diabetes", "bsa.m2", "lvedv.bl", 
+                    "lvedv.8") 
+  
+  lvedv <- mutate(lvedv, lvedv.bl = lvedv.bl - mean(lvedv.bl, na.rm = TRUE)) %>%
+           mutate(bsa.m2 = bsa.m2 - mean(bsa.m2, na.rm = TRUE)) %>%
+           mutate(any.diabetes = factor(any.diabetes))
+
+  lm.lvedv.base  <- lm(lvedv.8 ~ arm + lvedv.bl + any.diabetes + bsa.m2, 
+                       data = lvedv) 
+  lm.lvedv.intr  <- lm(lvedv.8 ~ arm * lvedv.bl + any.diabetes + bsa.m2, 
+                       data = lvedv) 
+
+  summary(lm.lvedv.base)
+  summary(lm.lvedv.intr)
+  
+  plot(lm.lvedv.base)
+  
+  lvedv.result <- tidy(lm.lvedv.base)
+  
+  
+
+```
+
+# LVESV
+```{r}
+
+  lvesv <- filter(data, time != "Difference") %>% 
+           select(id, arm, time, lvesv, any.diabetes, bsa.m2) %>%
+           spread(time, lvesv) 
+           
+  names(lvesv) <- c("id", "arm", "any.diabetes", "bsa.m2", "lvesv.bl", 
+                    "lvesv.8") 
+  
+  lvesv <- mutate(lvesv, lvesv.bl = lvesv.bl - mean(lvesv.bl, na.rm = TRUE)) %>%
+           mutate(bsa.m2 = bsa.m2 - mean(bsa.m2, na.rm = TRUE)) %>%
+           mutate(any.diabetes = factor(any.diabetes))
+
+  lm.lvesv.base  <- lm(lvesv.8 ~ arm + lvesv.bl + any.diabetes + bsa.m2, 
+                       data = lvesv) 
+  lm.lvesv.intr  <- lm(lvesv.8 ~ arm * lvesv.bl + any.diabetes + bsa.m2, 
+                       data = lvesv) 
+
+  summary(lm.lvesv.base)
+  summary(lm.lvesv.intr)
+  
+  plot(lm.lvesv.base)
+  
+  lvesv.result <- tidy(lm.lvesv.base)
+  
+
+```
+
+# LV Mass ED
+```{r}
+
+  lv.mass.es <- filter(data, time != "Difference") %>% 
+                select(id, arm, time, lv.mass.es, any.diabetes, bsa.m2) %>%
+                spread(time, lv.mass.es) 
+           
+  names(lv.mass.es) <- c("id", "arm", "any.diabetes", "bsa.m2", "lv.mass.es.bl",
+                         "lv.mass.es.8") 
+  
+  lv.mass.es <- mutate(lv.mass.es, 
+                       lv.mass.es.bl = lv.mass.es.bl - 
+                                       mean(lv.mass.es.bl, na.rm = TRUE)) %>%
+                mutate(bsa.m2 = bsa.m2 - mean(bsa.m2, na.rm = TRUE)) %>%
+                mutate(any.diabetes = factor(any.diabetes))
+
+  lm.lv.mass.es.base  <- lm(lv.mass.es.8 ~ arm + lv.mass.es.bl + any.diabetes + 
+                                           bsa.m2, data = lv.mass.es) 
+  lm.lv.mass.es.intr  <- lm(lv.mass.es.8 ~ arm * lv.mass.es.bl + any.diabetes + 
+                                           bsa.m2, data = lv.mass.es) 
+
+  summary(lm.lv.mass.es.base)
+  summary(lm.lv.mass.es.intr)
+  
+  plot(lm.lv.mass.es.base)
+  
+  lv.mass.es.result <- tidy(lm.lv.mass.es.base)
+  
+
+```
+
+
+# Thickening seg 13
+```{r}
+
+  thicg13 <- filter(data, time != "Difference") %>% 
+             select(id, arm, time, thicg13, any.diabetes) %>%
+             spread(time, thicg13) 
+           
+  names(thicg13) <- c("id", "arm", "any.diabetes", "thicg13.bl", "thicg13.8") 
+  
+  thicg13 <- mutate(thicg13, 
+                    thicg13.bl = thicg13.bl - 
+                                 mean(thicg13.bl, na.rm = TRUE)) %>%
+             mutate(any.diabetes = factor(any.diabetes))
+
+  lm.thicg13.base  <- lm(thicg13.8 ~ arm + thicg13.bl + any.diabetes, 
+                         data = thicg13) 
+  lm.thicg13.intr  <- lm(thicg13.8 ~ arm * thicg13.bl + any.diabetes, 
+                         data = thicg13) 
+
+  summary(lm.thicg13.base)
+  summary(lm.thicg13.intr)
+  
+  plot(lm.thicg13.base)
+  
+  thicg13.result <- tidy(lm.thicg13.base)
+  
+
+```
+
+# Thickening seg 14
+```{r}
+
+  thicg14 <- filter(data, time != "Difference") %>% 
+             select(id, arm, time, thicg14, any.diabetes) %>%
+             spread(time, thicg14) 
+           
+  names(thicg14) <- c("id", "arm", "any.diabetes", "thicg14.bl", "thicg14.8") 
+  
+  thicg14 <- mutate(thicg14, 
+                    thicg14.bl = thicg14.bl - 
+                                 mean(thicg14.bl, na.rm = TRUE)) %>%
+             mutate(any.diabetes = factor(any.diabetes))
+
+  lm.thicg14.base  <- lm(thicg14.8 ~ arm + thicg14.bl + any.diabetes, 
+                         data = thicg14) 
+  lm.thicg14.intr  <- lm(thicg14.8 ~ arm * thicg14.bl + any.diabetes, 
+                         data = thicg14) 
+
+  summary(lm.thicg14.base)
+  summary(lm.thicg14.intr)
+  
+  plot(lm.thicg14.base)
+  
+  thicg14.result <- tidy(lm.thicg14.base)
+  
+
+```
+
+
+# Thickening seg 8
+```{r}
+
+  thicg8 <- filter(data, time != "Difference") %>%
+            select(id, arm, time, thicg08, any.diabetes) %>%
+            spread(time, thicg08) 
+           
+  names(thicg8) <- c("id", "arm", "any.diabetes", "thicg8.bl", "thicg8.8") 
+  
+  thicg8 <- mutate(thicg8, 
+                   thicg8.bl = thicg8.bl - mean(thicg8.bl, na.rm = TRUE)) %>%
+            mutate(any.diabetes = factor(any.diabetes))
+
+  lm.thicg8.base  <- lm(thicg8.8 ~ arm + thicg8.bl + any.diabetes, 
+                        data = thicg8) 
+  lm.thicg8.intr  <- lm(thicg8.8 ~ arm * thicg8.bl + any.diabetes, 
+                        data = thicg8) 
+
+  summary(lm.thicg8.base)
+  summary(lm.thicg8.intr)
+  
+  plot(lm.thicg8.base)
+  
+  thicg8.result <- tidy(lm.thicg8.base)
+  
+
+```
+
+
+
+# Thickening seg 7
+```{r}
+
+  thicg7 <- filter(data, time != "Difference") %>%
+            select(id, arm, time, thicg07, any.diabetes) %>%
+            spread(time, thicg07) 
+           
+  names(thicg7) <- c("id", "arm", "any.diabetes", "thicg7.bl", "thicg7.8") 
+  
+  thicg7 <- mutate(thicg7, 
+                   thicg7.bl = thicg7.bl - mean(thicg7.bl, na.rm = TRUE)) %>%
+            mutate(any.diabetes = factor(any.diabetes))
+
+  lm.thicg7.base  <- lm(thicg7.8 ~ arm + thicg7.bl + any.diabetes, 
+                        data = thicg7) 
+  lm.thicg7.intr  <- lm(thicg7.8 ~ arm * thicg7.bl + any.diabetes, 
+                        data = thicg7) 
+
+  summary(lm.thicg7.base)
+  summary(lm.thicg7.intr)
+  
+  plot(lm.thicg7.base)
+  
+  thicg7.result <- tidy(lm.thicg7.base)
+  
+
+```
+
+# Thickening seg 1
+```{r}
+
+  thicg1 <- filter(data, time != "Difference") %>%
+            select(id, arm, time, thicg01, any.diabetes) %>%
+            spread(time, thicg01) 
+           
+  names(thicg1) <- c("id", "arm", "any.diabetes", "thicg1.bl", "thicg1.8") 
+  
+  thicg1 <- mutate(thicg1, 
+                   thicg1.bl = thicg1.bl - mean(thicg1.bl, na.rm = TRUE)) %>%
+            mutate(any.diabetes = factor(any.diabetes))
+
+  lm.thicg1.base  <- lm(thicg1.8 ~ arm + thicg1.bl + any.diabetes, 
+                        data = thicg1) 
+  lm.thicg1.intr  <- lm(thicg1.8 ~ arm * thicg1.bl + any.diabetes, 
+                        data = thicg1) 
+
+  summary(lm.thicg1.base)
+  summary(lm.thicg1.intr)
+  
+  plot(lm.thicg1.base)
+  
+  thicg1.result <- tidy(lm.thicg1.base)
+  
+
+```
+
+# Thickening seg 2
+```{r}
+
+  thicg2 <- filter(data, time != "Difference") %>%
+            select(id, arm, time, thicg02, any.diabetes) %>%
+            spread(time, thicg02) 
+           
+  names(thicg2) <- c("id", "arm", "any.diabetes", "thicg2.bl", "thicg2.8") 
+  
+  thicg2 <- mutate(thicg2, 
+                   thicg2.bl = thicg2.bl - mean(thicg2.bl, na.rm = TRUE)) %>%
+            mutate(any.diabetes = factor(any.diabetes))
+
+  lm.thicg2.base  <- lm(thicg2.8 ~ arm + thicg2.bl + any.diabetes, 
+                        data = thicg2) 
+  lm.thicg2.intr  <- lm(thicg2.8 ~ arm * thicg2.bl + any.diabetes, 
+                        data = thicg2) 
+
+  summary(lm.thicg2.base)
+  summary(lm.thicg2.intr)
+  
+  plot(lm.thicg2.base)
+  
+  thicg2.result <- tidy(lm.thicg2.base)
+  
+
+```
+
+
+
+
+
+# Thickness seg 13
+```{r}
+
+  thick13 <- filter(data, time != "Difference") %>% 
+             select(id, arm, time, thick13, any.diabetes) %>%
+             spread(time, thick13) 
+           
+  names(thick13) <- c("id", "arm", "any.diabetes", "thick13.bl", "thick13.8") 
+  
+  thick13 <- mutate(thick13, 
+                    thick13.bl = thick13.bl - 
+                                 mean(thick13.bl, na.rm = TRUE)) %>%
+             mutate(any.diabetes = factor(any.diabetes))
+
+  lm.thick13.base  <- lm(thick13.8 ~ arm + thick13.bl + any.diabetes, 
+                         data = thick13) 
+  lm.thick13.intr  <- lm(thick13.8 ~ arm * thick13.bl + any.diabetes, 
+                         data = thick13) 
+
+  summary(lm.thick13.base)
+  summary(lm.thick13.intr)
+  
+  plot(lm.thick13.base)
+  
+  thick13.result <- tidy(lm.thick13.base)
+  
+
+```
+
+# Thickness seg 14
+```{r}
+
+  thick14 <- filter(data, time != "Difference") %>% 
+             select(id, arm, time, thick14, any.diabetes) %>%
+             spread(time, thick14) 
+           
+  names(thick14) <- c("id", "arm", "any.diabetes", "thick14.bl", "thick14.8") 
+  
+  thick14 <- mutate(thick14, 
+                    thick14.bl = thick14.bl - 
+                                 mean(thick14.bl, na.rm = TRUE)) %>%
+             mutate(any.diabetes = factor(any.diabetes))
+
+  lm.thick14.base  <- lm(thick14.8 ~ arm + thick14.bl + any.diabetes, 
+                         data = thick14) 
+  lm.thick14.intr  <- lm(thick14.8 ~ arm * thick14.bl + any.diabetes, 
+                         data = thick14) 
+
+  summary(lm.thick14.base)
+  summary(lm.thick14.intr)
+  
+  plot(lm.thick14.base)
+  
+  thick14.result <- tidy(lm.thick14.base)
+  
+
+```
+
+
+# Thickness seg 8
+```{r}
+
+  thick8 <- filter(data, time != "Difference") %>%
+            select(id, arm, time, thick08, any.diabetes) %>%
+            spread(time, thick08) 
+           
+  names(thick8) <- c("id", "arm", "any.diabetes", "thick8.bl", "thick8.8") 
+  
+  thick8 <- mutate(thick8, 
+                   thick8.bl = thick8.bl - mean(thick8.bl, na.rm = TRUE)) %>%
+            mutate(any.diabetes = factor(any.diabetes))
+
+  lm.thick8.base  <- lm(thick8.8 ~ arm + thick8.bl + any.diabetes, 
+                        data = thick8) 
+  lm.thick8.intr  <- lm(thick8.8 ~ arm * thick8.bl + any.diabetes, 
+                        data = thick8) 
+
+  summary(lm.thick8.base)
+  summary(lm.thick8.intr)
+  
+  plot(lm.thick8.base)
+  
+  thick8.result <- tidy(lm.thick8.base)
+  
+
+```
+
+
+
+# Thickness seg 7
+```{r}
+
+  thick7 <- filter(data, time != "Difference") %>%
+            select(id, arm, time, thick07, any.diabetes) %>%
+            spread(time, thick07) 
+           
+  names(thick7) <- c("id", "arm", "any.diabetes", "thick7.bl", "thick7.8") 
+  
+  thick7 <- mutate(thick7, 
+                   thick7.bl = thick7.bl - mean(thick7.bl, na.rm = TRUE)) %>%
+            mutate(any.diabetes = factor(any.diabetes))
+
+  lm.thick7.base  <- lm(thick7.8 ~ arm + thick7.bl + any.diabetes, 
+                        data = thick7) 
+  lm.thick7.intr  <- lm(thick7.8 ~ arm * thick7.bl + any.diabetes, 
+                        data = thick7) 
+
+  summary(lm.thick7.base)
+  summary(lm.thick7.intr)
+  
+  plot(lm.thick7.base)
+  
+  thick7.result <- tidy(lm.thick7.base)
+  
+
+```
+
+# Thickness seg 1
+```{r}
+
+  thick1 <- filter(data, time != "Difference") %>%
+            select(id, arm, time, thick01, any.diabetes) %>%
+            spread(time, thick01) 
+           
+  names(thick1) <- c("id", "arm", "any.diabetes", "thick1.bl", "thick1.8") 
+  
+  thick1 <- mutate(thick1, 
+                   thick1.bl = thick1.bl - mean(thick1.bl, na.rm = TRUE)) %>%
+            mutate(any.diabetes = factor(any.diabetes))
+
+  lm.thick1.base  <- lm(thick1.8 ~ arm + thick1.bl + any.diabetes, 
+                        data = thick1) 
+  lm.thick1.intr  <- lm(thick1.8 ~ arm * thick1.bl + any.diabetes, 
+                        data = thick1) 
+
+  summary(lm.thick1.base)
+  summary(lm.thick1.intr)
+  
+  plot(lm.thick1.base)
+  
+  thick1.result <- tidy(lm.thick1.base)
+  
+
+```
+
+# Thickness seg 2
+```{r}
+
+  thick2 <- filter(data, time != "Difference") %>%
+            select(id, arm, time, thick02, any.diabetes) %>%
+            spread(time, thick02) 
+           
+  names(thick2) <- c("id", "arm", "any.diabetes", "thick2.bl", "thick2.8") 
+  
+  thick2 <- mutate(thick2, 
+                   thick2.bl = thick2.bl - mean(thick2.bl, na.rm = TRUE)) %>%
+            mutate(any.diabetes = factor(any.diabetes))
+
+  lm.thick2.base  <- lm(thick2.8 ~ arm + thick2.bl + any.diabetes, 
+                        data = thick2) 
+  lm.thick2.intr  <- lm(thick2.8 ~ arm * thick2.bl + any.diabetes, 
+                        data = thick2) 
+
+  summary(lm.thick2.base)
+  summary(lm.thick2.intr)
+  
+  plot(lm.thick2.base)
+  
+  thick2.result <- tidy(lm.thick2.base)
+  
+
+```
+
+
+### Line plots
+
+```{r}
+
+  x <- filter(data, time != "Difference") %>%
+       select(id, arm, time, thicg02, any.diabetes, bsa.m2) %>%
+       mutate(out = thicg02 /  bsa.m2)
+  
+  ggplot(x, aes(y = thicg02, color = arm)) +
+    facet_wrap(~ arm) +
+    theme_base() +
+    geom_violin(aes(x = as.numeric(time), group = time),
+                color = "grey90", fill = "grey90", width = .5) +
+    geom_line(aes(group = interaction(id, arm),
+                  x = as.numeric(time)),
+              alpha = 0.3, linetype = "dashed") +
+    geom_jitter(aes(group = id, x = as.numeric(time)),
+                size = 2.5, alpha = 0.5, width = 0.05) +
+    geom_smooth(data = group_by(x, arm),
+                aes(x = as.numeric(time)),
+                method = "lm", se = FALSE, size = 1) +
+    scale_color_manual(guide = FALSE,
+                       values = viridis(3, end = 0.8)) +
+    scale_x_continuous(breaks = c(1, 2),
+                       labels = c("Baseline", "8 weeks")) +
+    scale_fill_manual(guide = FALSE, values = viridis(3, end = 0.8)) +
+    xlab("") +
+    ylab("") 
+  
+   ggplot(x, aes(x = thicg02, fill = arm)) +
+     geom_density() +
+     facet_wrap(~ time + arm) +
+     scale_fill_manual(guide = FALSE,
+                       values = viridis(3, end = 0.8)) +
+     theme_base() 
+   
+
+```
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
